@@ -51,7 +51,7 @@ mix phx.gen.channel Hello
 
 Output:
 
-```text    
+```text
 * creating lib/hello_sockets_web/channels/hello_channel.ex
 * creating test/hello_sockets_web/channels/hello_channel_test.exs
 
@@ -104,3 +104,107 @@ CONNECTED TO HelloSocketsWeb.UserSocket in 104µs
 
 [info] JOINED hello:lobby in 68µs
 ```
+
+### WebSocket Protocol
+
+https://datatracker.ietf.org/doc/html/rfc6455
+
+
+#### Establishing the Connection
+
+> A WebSocket starts its life as a normal web request that becomes “upgraded”
+> to a WebSocket.
+
+> WebSockets operate over a TCP socket using a special data protocol, with the
+> initial HTTP request ensuring that the connection is compatible with browsers
+> and server proxies. The same TCP socket that the HTTP connection request
+> went over becomes the data TCP socket after the upgrade—this allows Web-
+> Sockets to only use a single socket per connection. WebSockets were designed
+> for allowing browsers to connect to a TCP socket through HTTP, but it is
+> completely acceptable to use them in non-browser environments such as a
+> server or mobile client.
+
+> To summarize, a WebSocket connection follows this request flow:
+> 1. Initiate a GET HTTP(S) connection request to the WebSocket endpoint.
+> 2. Receive a 101 or error from the server.
+> 3. Upgrade the protocol to WebSocket if 101 is received.
+> 4. Send/receive frames over the WebSocket connection.
+
+After upgrading the connection on `3` to a websocket we have a bidirectional 
+channel open between the server and the client that allows to send and receive
+messages on `4`.
+
+#### Sending and Receiving Data
+
+> the important thing to note is that a WebSocket is capable of sending messages
+> (green background) and receiving messages (white background). This two-way 
+> data transmission can happen in both directions simultaneously. A connection 
+> which is capable of two-way data transmission is called a full-duplex 
+> connection.
+
+> WebSockets transmit data through a [data framing](https://datatracker.ietf.org/doc/html/rfc6455#section-5) protocol. We can't see it
+> with the DevTools, but it's worth knowing this provides security benefits and
+> allows WebSocket connections to work properly through different networking
+> layers. These traits allow us to more confidently ship WebSocket-powered
+> applications into production.
+
+> The WebSocket protocol contains extensions that provide additional 
+> functionality. Extensions are requested by the client using the
+> Sec-WebSocket-Extensions request header. The server can optionally use any of 
+> the proposed extensions and return the list of active extensions to the client
+> in a response header named Sec-WebSocket-Extensions. 
+
+> WebSocket data frames are not compressed by default, but can be compressed by 
+> using the per message deflate extension. **This feature allows bandwidth to be 
+> reduced at the cost of processing power**, which is a benefit for some 
+> applications.
+
+#### Staying Alive, Keep-alive
+
+> The WebSocket protocol specifies [Ping and Pong](https://datatracker.ietf.org/doc/html/rfc6455#section-5.5.2) frames 10 which can be used
+> to verify that a connection is still alive. These are optional, though, and you'll
+> soon see that Phoenix doesn't use them. Instead, clients send heartbeat-data
+> messages to the Phoenix Server they're connected to every 30 seconds. The
+> Phoenix WebSocket process will close a connection if it doesn't receive a ping
+> within a timeout period, with 60 seconds the default. With Phoenix, it is
+> possible to use a WebSocket ping control frame to keep the WebSocket 
+> connection alive, but the official Phoenix client doesn't use it.
+
+> A predictable heartbeat for the connection turns out to be very useful. A
+> connection can be dead but not closed properly; this causes the connection
+> to stay active on the server. A connection that is active but without a client
+> on the other side wouldn't be sending a heartbeat, so it closes gracefully after
+> a short period of time.
+
+> It is useful that the client manages the heartbeat rather than the server. If the
+> server is in charge of sending pings to a client, then the server is aware of the
+> connectivity problem but cannot establish a new connection to the client. If a
+> connectivity problem is detected by the client via its ping request, the client can
+> quickly attempt to reconnect and establish the connection again.
+
+#### Security
+
+> Our HelloSocket example violates one of the most important rules of WebSocket
+> connections: always use wss:// URIs to ensure a secure connection. We use
+> ws:// in our example because it doesn’t involve signing a local certificate for
+> SSL, but you should always use wss protocol in production to ensure security.
+> If you are using https to access your webpage, then you are required to use
+> the wss protocol by the browser.
+
+> The Origin header of every connection request should be checked to ensure that 
+> it is coming from a known location. It is possible that this header was spoofed
+> by a non-browser client, but browser security increases when we check the Origin
+> header
+
+> WebSockets do not follow the same rules as standard web requests when it
+> comes to cross-origin resource sharing (CORS)—the WebSocket connection
+> request doesn’t use CORS protections at all. Cookies are sent to the server,
+> even if the page initiating the request is on a different domain than what the
+> cookies specify. These cookies aren’t readable by the initiating page, but they
+> would allow access to the server when access should be denied. There are
+> strategies that can help solve this problem, such as origin checking or cross-
+> site request forgery (CSRF) tokens.
+
+> As a way to prevent CSRF attacks, Phoenix has historically disallowed cookie
+> access when establishing a WebSocket connection. Phoenix now supports
+> access to the session when a CSRF token is provided to the WebSocket connection.
