@@ -99,3 +99,41 @@ You can buy the [Real-Time Phoenix - Build Highly Scalable Systems with Channels
 > logic in our application's core and not have it implemented in our Channels.
 > The exception to this is that logic needed for real-time communication 
 > customization is best implemented at the Channel level
+
+### Implement Our First Channel
+
+The channel minimal implementation:
+
+```elixir
+defmodule HelloSocketsWeb.PingChannel do
+
+  use HelloSocketsWeb, :channel
+
+  @impl true
+  def join(_topic, _payload, socket) do
+    {:ok, socket}
+  end
+
+  @impl true
+  def handle_in("ping", _payload, socket) do
+    {:reply, {:ok, %{ping: "pong"}}, socket}
+  end
+  
+end
+```
+
+> `use` is a special keyword in Elixir that invokes the `__using__` macro. In 
+> the case of Phoenix.Channel, it includes the bulk of the code to make the 
+> Channel functional.
+> We allow any connection to this Channel to succeed by not implementing any
+> join logic. This is acceptable for topics that we want to be fully public. 
+> It is not
+
+
+> `handle_in/3` receives an event, payload, and the state of the current Socket. We
+> only allow the ping event to be processed; any other event will be an error. We
+> are able to do several things when we receive a message:
+> * Reply to the message by returning {:reply, {:ok, map()}, Phoenix.Socket} . The
+> payload must be a map.
+> * Do not reply to the message by returning {:noreply, Phoenix.Socket} .
+> * Disconnect the Channel by returning {:stop, reason, Phoenix.Socket} .

@@ -8,7 +8,7 @@ defmodule HelloSocketsWeb.UserSocket do
 
   ## Channels
 
-  # channel "hello:*", HelloSocketsWeb.HelloChannel
+  channel "hello:*", HelloSocketsWeb.HelloChannel
   channel "ping", HelloSocketsWeb.PingChannel
 
   # Socket params are passed from the client and can
