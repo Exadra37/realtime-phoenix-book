@@ -137,3 +137,25 @@ end
 > payload must be a map.
 > * Do not reply to the message by returning {:noreply, Phoenix.Socket} .
 > * Disconnect the Channel by returning {:stop, reason, Phoenix.Socket} .
+
+### Handle Channel Errors
+
+> A major difference between a traditional web Controller and a Channel is that
+> the Channel is long-lived. In a perfect world, a Channel will live for the entire
+> life of the connection without being interrupted. But we don't live in a perfect
+> world, and disconnections are going to occur in our application. They may
+> occur because of a bug in our application causing a crash or because the
+> client's internet connection is not stable.
+
+> This reinforces the important part of the Channel structure that OTP enables:
+> fault tolerance. An error that happens in a single Channel should not affect
+> any other Channels and should not affect the Socket. An error that happens
+> in the Socket, however, will affect all Channels that exist under the Socket
+> because they are dependent on the Socket working correctly.
+
+> It is up to the client to respond to the "phx_error" response by ensuring that it
+> rejoins the Channel and responds to the connection drop by reconnecting.
+> The official JavaScript client handles all of this for you so you don't need to
+> worry about the orchestration of the connection. Any non-official clients will
+> need to handle this properly, however, or they could end up being connected
+> to the Socket but not connected to a Channel.
