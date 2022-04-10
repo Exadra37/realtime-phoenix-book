@@ -186,3 +186,23 @@ end
 > topic for user 2 on team 1. This allows notifications to be pushed from any 
 > part of the system that is capable of providing a user and team ID. It also 
 > prevents different users from receiving each other's private notifications.
+
+### Selecting a Topic Name
+
+> A carefully selected topic name is important for the scalability and behavior
+> of an application. For instance, a public Channel providing inventory updates
+> to an e-commerce storefront could be implemented in a variety of ways:
+> * "inventory" - This topic does not delineate between different SKUs
+> * "inventory:*" - This topic delineates between different item SKUs with a
+> wildcard
+
+> If an overly broad topic is selected, such as "inventory" , then an inventory change
+> to a SKU is broadcast to every connected client, even if they are not viewing
+> the item. A narrower topic such as "inventory:*" would lead to more connected
+> topics (1 per viewed item), but means that outgoing data could be held back
+> from clients that aren't viewing a particular SKU.
+> In this example, you would select a solution based on your business needs and
+> tolerances.
+
+> The battle between scalability of performance and maintenance is a constant
+> one; the best solution is often dependent on decisions specific to a business.
