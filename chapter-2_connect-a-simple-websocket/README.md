@@ -1,9 +1,9 @@
-# CHAPTER 2 - Connect a Simple Websocket
+# CHAPTER 2 - Connect a Simple WebSocket
 
 You can buy the [Real-Time Phoenix - Build Highly Scalable Systems with Channels](https://pragprog.com/titles/sbsockets/real-time-phoenix/) book, by Stephen Bussey, with the 35% discount code from the [Elixir Forum Giveaways](https://elixirforum.com/t/elixir-forum-update-2022-the-100-000-issue/45299) page.
 
 
-## Connect a Simple Websocket
+## Connect a Simple WebSocket
 
 > Real-time systems are all about getting data from the server to the user, or
 > vice versa, as quickly and efficiently as possible. A critical piece of a real-time
@@ -41,7 +41,7 @@ You can buy the [Real-Time Phoenix - Build Highly Scalable Systems with Channels
 
 This part is about creating the Phoenix app `hello_websockets` to then learn how websockets work.
 
-I ma using Phoenix `1.6.6`, thus the book instructions don't work anymore because LiveView is now the default, and the way we enable Phoenix Channels seem to have changed.
+I am using Phoenix `1.6.6`, thus the book instructions don't work anymore because LiveView is now the default, and the way we enable Phoenix Channels seem to have changed.
 
 Now we need to first generate the channels with:
 
@@ -208,3 +208,95 @@ messages on `4`.
 > As a way to prevent CSRF attacks, Phoenix has historically disallowed cookie
 > access when establishing a WebSocket connection. Phoenix now supports
 > access to the session when a CSRF token is provided to the WebSocket connection.
+
+### Long Polling, a Real-Time Alternative
+
+> It is important for the maintenance of our application that we do not design 
+> it solely around WebSocket usage. Remember, we have a WebSocket-powered 
+> application, not a WebSocket application.
+
+> We can even run WebSockets in tandem with HTTP long polling.
+
+#### What is Long Polling?
+
+> HTTP [long polling](https://tools.ietf.org/html/rfc6202#section-2) is a 
+> technique that uses standard HTTP in order to asynchronously send data to a 
+> client.
+
+> Long polling uses a request flow as follows:
+> 1. The client initiates an HTTP request to the server.
+> 2. The server doesn’t respond to the request, instead leaving it open. The
+> server will respond when it has new data or too much time elapses.
+> 3. The server sends a complete response to the client. At this point the client
+> is aware of the real-time data from the server.
+> 4. The client loops this flow as long as the real-time communication is
+> desired.
+
+> The key component of the long polling flow is that the client's connection to
+> the server remains open until new data is received.
+
+#### Should You Use Long Polling?
+
+> There is a more exhaustive [list of issues](https://tools.ietf.org/html/rfc6202#section-2.2) maintained by the IETF, 12 which is
+> a must read if you're going to use long polling in production.
+> 1. Request headers are processed on every long poll request. This can,
+> potentially, dramatically increase the number of transmitted bytes which
+> need to be processed by the server. This isn’t optimal for performance.
+> 2. Message latency can be high when a poor network is being used. Dropped
+> packets and slower data transit times can make latency much higher because 
+> multiple connections have to complete in order to reestablish the long polling
+> connection. This can affect how real-time the application feels.
+
+> Both of these problems can affect performance and scalability of our 
+> application, which would be bad if the system becomes heavily used. WebSockets
+> are not prone to these performance issues because the data transmission
+> protocol is much lighter than full HTTP requests, requiring less data overhead
+> and network round trips.
+
+> There are times that long polling can be useful, however. Long polling connec-
+> tions can be load-balanced across multiple servers easily, because the con-
+> nections are being established often. WebSockets can be tricky to load balance
+> if the connections have a long life; longer connections provide fewer opportu-
+> nities to change which server a client is connected to. Another benefit of long
+> polling is that it can transparently take advantage of protocol advancements,
+> such as future versions of HTTP. Google, a well-known innovator of internet
+> protocols, leverages a custom form of long polling to power certain real-time
+> applications.
+
+> Phoenix ships with both a WebSocket and a long polling communication layer
+> out-of-the-box. A client can change from WebSocket to long polling if some-
+> thing goes wrong, such as poor network connectivity.
+
+> There are other real-time communication techniques that Phoenix does not ship 
+> with natively. [Server-sent events](https://hexdocs.pm/sse/readme.html#content), 
+> for example, provides one-way data flow from the server to a client.
+
+### WebSockets and Phoenix Channels
+
+> WebSockets map very well to the Erlang/OTP actor model and are leveraged
+> by one of the stars of Phoenix: Channels. WebSockets are the primary 
+> communication layer for Channels. This provides Channels with a solid 
+> foundation on which to build real-time applications.
+
+> Maybe you're worried that WebSockets will cause high resource usage in your
+> application. Don't worry! Phoenix and Elixir make it easy to have tens of
+> thousands of connections on a single server. Each connected Channel and
+> WebSocket in your application has independent memory management and garbage
+> collection because of OTP processes. An advantage of this process-based 
+> architecture is that WebSocket connections which are not being used often can 
+> be stored in a hibernated state, which consumes very little memory. This is 
+> great for scalability.
+
+> Channels use several levels of processes which provide fault tolerance and 
+> reduced memory usage across our application. This is very important for 
+> scaling our real-time application because it prevents application bottlenecks 
+> (points in code that slow down our system) from forming.
+
+### Wrapping Up
+
+> The WebSocket protocol provides a strong real-time communication layer for
+our real-time applications. WebSockets start as normal HTTP requests before
+being upgraded to TCP sockets for data exchange. This allows WebSockets
+to work well with current web technologies and also lets them leverage faster
+data transport by using a single connection with minimal protocol overhead
+for each message.

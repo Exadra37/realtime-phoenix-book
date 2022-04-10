@@ -11,3 +11,4 @@ I may also take some notes of my own, but probably not many.
 ## TOC
 
 * [Chapter 1 - Real-time is Now](/chapter-1_realtime-is-now/README.md)
+* [Chapter 2 - Connect a Simple WebSocket](/chapter-2_connect-a-simple-websocket/README.md)
