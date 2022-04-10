@@ -159,3 +159,30 @@ end
 > worry about the orchestration of the connection. Any non-official clients will
 > need to handle this properly, however, or they could end up being connected
 > to the Socket but not connected to a Channel.
+
+### Topics
+
+> Topics are string identifiers used for connecting to the correct Channel when
+> the "phx_join" message is received by the Socket.
+
+> A topic can be any string, but it is best practice to use a "topic:subtopic" format
+> for the topic name. This convention allows us to have a single Socket module
+> with different types of Channels associated to it. This is because channel/3 can
+> accept a wildcard splat operator as the final part of the string.
+
+> It's possible to use the topic of "*" to allow any topic to route to the Channel.
+> Any routing is allowed as long as the * character is at the end of the topic
+> string. Try adding a character after "*" in our example above to see what
+> happens by changing "ping:*" to "ping:*a" . Luckily for us, Phoenix has protections
+> in place that cause an error at compile time
+
+> It is useful to note that topic routes must end with a wildcard, but they could
+> contain multiple pieces of dynamic data. This is due to limitations in pattern
+> matching when the wildcard isn't at the end.
+
+> Dynamic topic names are very useful. I have implemented them to give stable
+> identifiers to private Channels based on multiple pieces of data. For example,
+> the format "notifications:t-1:u-2" could be used to identify a notifications 
+> topic for user 2 on team 1. This allows notifications to be pushed from any 
+> part of the system that is capable of providing a user and team ID. It also 
+> prevents different users from receiving each other's private notifications.
