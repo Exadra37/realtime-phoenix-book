@@ -472,3 +472,24 @@ channel.on("send_ping", payload => {
 > The JavaScript client knows the Channel crashed, because it’s sent a "phx_error"
 > event, and immediately attempts to reconnect. It’s able to establish the Channel
 > again because our problem only occurs when we sent an incorrect message.
+
+## Wrapping Up
+
+> Phoenix Channels are a very powerful abstraction that allows development
+> of real-time applications in Elixir. Channels allow us to write applications
+> that succeed across several scalability considerations: performance, mainte-
+> nance, and cost. Elixir and OTP are perfectly suited for modeling real-time
+> systems, and the Transport-Channel-PubSub layering of Phoenix Channels
+> allows us to take advantage of a strongly designed OTP foundation.
+
+> Channels allow our applications to receive and send messages to users with
+> soft real-time constraints. Our Channel code leverages handle_in and handle_out
+> callback functions to process our user’s messages and interact with our appli-
+> cation core. The Phoenix Message structure allows our applications to handle
+> message replies and prevent duplicate Channel subscriptions. This simple but
+> powerful design means we can build our applications with more confidence.
+
+> The official Phoenix JavaScript client makes connecting to Channels with
+> both WebSockets and long polling simple. The hard work of staying connected
+> to the server is handled for us in a way that allows us to focus on application
+> development rather than real-time communication layer development.
