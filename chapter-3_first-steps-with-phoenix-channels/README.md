@@ -223,3 +223,131 @@ end
 > the nodes have a way to talk to each other. PubSub ships with a pg2 adapter
 > out-of-the-box. There is also a Redis PubSub adapter that allows for using
 > PubSub without having nodes clustered together.
+
+### Send and Receive Messages
+
+#### Phoenix Message Structure
+
+> Phoenix Channels use a simple message protocol to represent all messages
+> to and from a client. The contents of the Message allow clients to keep track
+> of the request and reply flow, which is important because multiple asyn-
+> chronous requests can be issued to a single Channel.
+
+Phoenix message signature:
+
+```elixir
+[
+  Join ref,
+  Message ref,
+  topic,
+  event,payload
+]
+```
+
+For example:
+
+```elixir
+[
+  "1",
+  "1",
+  "ping"
+  "phx_join",
+  {}
+]
+
+```
+
+> Let's break down each of these fields and their use in the Channel flow:
+> * Join Ref—A unique string that matches what the client provided when it
+> connected to the Channel. This helps prevent duplicate Channel subscrip-
+> tions from the client. In practice, this is a number that is incremented
+> each time a Channel is joined.
+> * Message Ref—A unique string provided by the client on every message.
+> This allows a reply to be sent in response to a client message. In practice,
+> this is a number which is incremented each time a client sends a message.
+> * Topic—The topic of the Channel.
+> * Event—A string identifying the message. The Channel implementation
+> can use pattern matching to handle different events easily.
+> * Payload—A JSON encoded map (string) that contains the data contents
+> of the message. The Channel implementation can use pattern matching
+> on the decoded map to handle different cases for an event.
+
+> Some pieces of the message format are optional and can be null depending
+> on the situation. For example, we saw that the ref strings were both null when
+> we used broadcast to send a message to our client. This happens because the
+> information is owned by the client, so the server cannot provide it when
+> pushing data that isn't in reply to an original message.
+
+> The official Phoenix Channel clients send a join ref and message ref with every
+> message. The Channel sends the same topic, join ref, and message ref to a
+> client when a successful reply is generated. This allows the client to associate
+> the incoming message to a message that had been sent to the server, causing
+> it to be recognized as a reply.
+
+### Receiving Messages from a Client
+
+> When a client sends a message to a Channel, the transport process receives
+> the message and delegates it to the Socket’s handle_in/2 callback. The Socket
+> sends the decoded Message struct to the correct Channel process and handles
+> any errors such as a mismatched topic. The Phoenix.Channel.Server process han-
+> dles the sent message by delegating to the associated Channel implementation's
+> handle_in/3 callback. This happens transparently to us, meaning that we only
+> need to be concerned with the client sending a message and our Channel's
+> handle_in/3 callback processing the message.
+> 
+> A benefit to this flow being heavily process-based is that the Socket will not
+> block while waiting for the Channel to process the message. This allows us
+> to have many Channels on a single Socket while still maintaining the high
+> performance of our system.
+
+> You'll notice that the payload uses strings and not atoms. Atoms are not
+> garbage collected by the BEAM, so Phoenix does not provide user-submitted
+> data as atoms. You can use either atoms or string when creating a response
+> payload.
+
+#### Using Pattern Matching to Craft Powerful Functions
+
+> The payload of the message is more flexible than the event name when
+> designing the message handling of a system. It can be used to provide complex
+> payloads (any JSON is valid) with values of types other than string. The event
+> name, on the other hand, must always be a string and cannot represent
+> complex data structures.
+
+#### Other Response Types
+
+> There are other ways that we can handle an incoming event rather than
+replying to the client. Let's look at two different ways to respond: doing
+nothing or stopping the Channel.
+
+> Our `:noreply` response is the simplest here, as we simply do nothing and don't
+> inform the client of a response. The `:shutdown message` is slightly more complex
+> because we must provide an exit reason and an optional response. We are pro-
+> viding an `:ok` and map tuple as our response, but we can omit this argument for
+> an equally correct response. The exit reason uses standard `GenServer.terminate/2`
+> reasons. You most likely want to use :normal or :shutdown with this feature as it
+> properly closes the Channel with a phx_close event.
+
+#### Pushing Messages to a Client
+
+> We have seen an example of how PubSub is used to broadcast from our Endpoint
+> module. We were able to push a message to our connected topic without
+> writing any Channel handler code. This is the default behavior of Channels:
+> any message sent to their topic is broadcast directly to the connected client.
+> We can customize this behavior, however, by intercepting any outgoing mes-
+> sages and deciding how to handle them.
+
+>It is best practice to not write an intercepted event if you do not need to 
+> customize the payload, because each pushed message will be encoded by itself,
+>up to once per subscribed Channel, instead of a single push to all subscribed
+>Channels. This will decrease performance in a system with a lot of subscribers.
+
+> **Intercepting Events for Metrics**
+> While it is best practice to not intercept events that are not changed, because of the
+> decreased performance, it can be useful for tasks such as collecting metrics about
+> every push. You would still incur the interception penalty discussed in this section,
+> but the benefit of metrics outweighs that.
+> In [PushEx](https://hex.pm/packages/push_ex), a an implementation of Channels for pushing data to clients, I use inter-
+> ception to capture a delivery metric for every message to every client. Capturing
+> messages at this level allows me to keep track of the number of milliseconds that a
+> message stays in the system for each connected client. The system must keep this
+> metric low to ensure that users are getting their data as quickly as possible.
