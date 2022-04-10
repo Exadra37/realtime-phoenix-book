@@ -76,3 +76,26 @@ You can buy the [Real-Time Phoenix - Build Highly Scalable Systems with Channels
 > long polling in a way that follows best practices. (If you ever need a custom
 > transport layer, which is rare, then you do have the ability to implement your
 > own Socket.Transport .)
+
+### Channels
+
+> Channels are the real-time entry points to our application’s logic and where
+> most of an application’s request handling code lives. A Channel has several
+> different responsibilities to enable real-time applications:
+> * Accept or reject a request to join.
+> * Handle messages from the client.
+> * Handle messages from the PubSub.
+> * Push messages to the client.
+
+> The distinction between Channels and Sockets may not be obvious at a glance.
+> A Socket's responsibilities involve connection handling and routing of requests
+> to the correct Channel. A Channel's responsibilities involve handling requests
+> from a client and sending data to a client. In this way, a Channel is similar
+> to a Controller in the MVC (Model-View-Controller) design pattern.
+
+> It has become popular in recent years to use the mantra “skinny controllers”
+> to indicate that we don't want business logic in our controllers. This same
+> mantra can be applied to Channels; we should strive to keep application
+> logic in our application's core and not have it implemented in our Channels.
+> The exception to this is that logic needed for real-time communication 
+> customization is best implemented at the Channel level
