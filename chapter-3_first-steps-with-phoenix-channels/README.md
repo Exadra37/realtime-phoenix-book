@@ -66,3 +66,13 @@ You can buy the [Real-Time Phoenix - Build Highly Scalable Systems with Channels
 > processes. Messages are broadcast through the PubSub process and are sent
 > to both the local node and remote nodes. For now, just know that PubSub
 > allows a cluster of nodes to work with Channels.
+
+### Sockets
+
+> Sockets form the backbone of real-time communication in Phoenix. A Socket
+> is a module that implements the Phoenix.Socket.Transport behaviour, but we'll be
+> using a specific implementation called Phoenix.Socket . You'll most likely be using
+> Phoenix.Socket in your application because it implements both WebSockets and
+> long polling in a way that follows best practices. (If you ever need a custom
+> transport layer, which is rare, then you do have the ability to implement your
+> own Socket.Transport .)
