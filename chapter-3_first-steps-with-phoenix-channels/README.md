@@ -351,3 +351,124 @@ nothing or stopping the Channel.
 > messages at this level allows me to keep track of the number of milliseconds that a
 > message stays in the system for each connected client. The system must keep this
 > metric low to ensure that users are getting their data as quickly as possible.
+
+### Channel Clients
+
+> Any networked device can be used to connect to Channels. Languages that
+have a WebSocket or HTTP client (for long polling) are easiest to get started
+with.
+
+> There are official and unofficial clients that work out-of-the-box with
+> Channels, and these clients can certainly make the task easier for us. A [list
+> of client libraries](https://hexdocs.pm/phoenix/channels.html#client-libraries) is maintained in the Phoenix Channel documentation.
+
+#### Official JavaScript Client
+
+> Any Channel client has a few key responsibilities that should be followed, in
+> order for all behavior to work as expected:
+> Connect to the server and maintain the connection by using a heartbeat.
+> * Join the requested topics.
+> * Push messages to a topic and optionally handle responses.
+> * Receive messages from a topic.
+> * Handle disconnection and other errors gracefully; try to maintain a connection whenever possible.
+
+#### Sending Messages with the JavaScript Client
+
+> We are logging that the ping is sent before our joined reply comes in. This
+> highlights an important aspect of the JavaScript client: if the client hasn't
+> connected to the Channel yet, the message will be buffered in memory and
+> sent as soon as the Channel is connected. It is stored in a short-lived (5-sec-
+> ond) buffer so that it doesn't immediately fail. This behavior is useful if our
+> Channel ever becomes disconnected due to a client network problem, because
+> several seconds of reconnection are available before the message is handled
+> as an error.
+
+> If you only want to send a message when the topic is connected, it is possible
+> to do so. In that case you would move the push function inside of the join "ok"
+> handler callback.
+
+> Sometimes messages are not handled correctly by the server. For instance,
+> it could be under heavy load or we could have a coding bug in our Channel
+> handlers. For this reason, it's a best practice to have error and timeout 
+> handlers whenever a message is sent to our Channel.
+
+```javascript
+let channel = socket.channel("ping:me", {})
+let payload = {key: "value"}
+channel.push("event", payload)
+  .receive("ok", resp => console.log("OK response:", resp))
+  .receive("error", resp => console.error("ERROR response:", resp))
+  .receive("timeout", resp => console.error("Message timeout after 10 seconds (configurable)"))
+```
+
+> A payload is sent as the second parameter to push . This payload can be any
+> JSON compatible object. Errors are handled via the "error" event similarly to
+> the "ok" event.
+
+#### Receiving Messages with the JavaScript Client
+
+> A Channel can send messages to a connected client at any time, not just in
+> response to an incoming message.
+
+Send a message from the Channel via `iex`:
+
+```elixir
+iex> HelloSocketsWeb.Endpoint.broadcast "ping:me", "request_ping", %{data: "test"}
+```
+
+That is then intercept by the Channel handler:
+
+```elixir
+# the interception is to augment the data sent with `from_node` info, and map
+# to `send_ping` event on the client.
+def handle_out("request_ping", payload, socket) do
+  push(socket, "send_ping", Map.put(payload, "from_node", Node.self()))
+  {:noreply, socket}
+end
+```
+
+The client receives it with:
+
+```javascript
+channel.on("send_ping", payload => {
+  console.log("ping requested", payload)
+  channel.push("ping")
+    .receive("ok", resp => console.log("ping:", resp.ping))
+})
+```
+
+> The `on` callback of our client channel is used to register incoming message
+> subscriptions. The first argument is the string name of the event that we want
+> to handle; this requires us to know the exact event name for incoming mes-
+> sages. For this reason, it is a good idea to not use dynamic event names. You
+> can instead place dynamic information in the message payload.
+
+> Try loading multiple instances of the web page and broadcasting again. You
+> will see that every connected client receives the broadcast. This makes
+> broadcasting a very powerful way to send data to all connected clients. Replies,
+> on the other hand, will only be sent to the client that sent the message.
+
+#### JavaScript Client Fault Tolerance and Error Handling
+
+> It's a fact of software that errors and disconnections will occur. We can best
+> prepare our application for these inevitable problems by handling caught
+> errors ourselves and by ensuring that our client handles unexpected errors.
+>
+> One of the great features of the Phoenix JavaScript client is that it tries very
+> hard to stay connected. When the underlying connection becomes disconnect-
+> ed, the client will automatically attempt reconnection until it's successful.
+> Reconnection is fairly aggressive, which is often exactly what we want,
+> although we can customize it to be more or less aggressive based on our
+> application's needs.
+
+> In addition to Socket reconnection, the underlying Channel subscriptions try
+> to maximize time spent connected. We saw in the previous example that the
+> ping Channel became reconnected when the Socket did. The Channel may
+> become disconnected for other reasons as well, such as when an application
+> error occurs.
+
+> Our PingChannel crashed when it encountered the unknown event, causing the 
+> Process to die.
+> The JavaScript client knows the Channel crashed, because it’s sent a "phx_error"
+> event, and immediately attempts to reconnect. It’s able to establish the Channel
+> again because our problem only occurs when we sent an incorrect message.

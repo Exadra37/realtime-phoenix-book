@@ -59,6 +59,50 @@ socket.connect()
 let channel = socket.channel("hello:lobby", {})
 channel.join()
   .receive("ok", resp => { console.log("Joined successfully", resp) })
-  .receive("error", resp => { console.log("Unable to join", resp) })
+  .receive("error", resp => { console.error("Unable to join", resp) })
+
+
+channel = socket.channel("ping:me", {})
+channel.join()
+  .receive("ok", resp => { console.log("Joined successfully to channel: ping ", resp) })
+  .receive("error", resp => { console.error("Unable to join to channel: ping", resp) })
+
+/**
+ * SENDING MESSAGES
+ */
+
+console.log("send ping")
+channel.push("ping")
+  .receive("ok", resp => console.log("receive", resp.ping))
+
+console.log("send pong")
+channel.push("pong")
+  .receive("ok", resp => console.log("won't happen"))
+  .receive("error", resp => console.error("won't happen yet"))
+  .receive("timeout", resp => console.error("pong message timeout"))
+
+console.log("send param_ping > error: true")
+channel.push("param_ping", {error: true})
+  .receive("error", resp => console.error("param_ping error:", resp))
+
+console.log("send param_ping > error: false")
+channel.push("param_ping", {error: false})
+  .receive("ok", resp => console.log("param_ping ok:", resp))
+
+console.log("send invalid")
+channel.push("invalid")
+  .receive("ok", resp => console.log("won't happen"))
+  .receive("error", resp => console.error("won't happen yet"))
+  .receive("timeout", resp => console.error("invalid event timeout"))
+
+/**
+ * RECEIVING MESSAGES
+ */
+
+channel.on("send_ping", payload => {
+  console.log("ping requested", payload)
+  channel.push("ping")
+    .receive("ok", resp => console.log("ping:", resp.ping))
+})
 
 export default socket

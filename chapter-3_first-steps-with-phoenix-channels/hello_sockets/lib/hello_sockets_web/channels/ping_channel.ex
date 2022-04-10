@@ -26,6 +26,16 @@ defmodule HelloSocketsWeb.PingChannel do
   end
 
   @impl true
+  def handle_in("param_ping", %{"error" => true}, socket) do
+    {:reply, {:error, %{reaon: "You asked for this!"}}, socket}
+  end
+
+  @impl true
+  def handle_in("param_ping", payload, socket) do
+    {:reply, {:ok, payload}, socket}
+  end
+
+  @impl true
   def handle_in("pong", _payload, socket) do
     # We only handle ping
     {:noreply, socket}
