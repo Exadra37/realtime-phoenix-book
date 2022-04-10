@@ -206,3 +206,20 @@ end
 
 > The battle between scalability of performance and maintenance is a constant
 > one; the best solution is often dependent on decisions specific to a business.
+
+### PubSub
+
+> Phoenix.PubSub (publisher/subscriber) powers topic subscription and message
+> broadcasting in our real-time application. Channels use PubSub internally,
+> so we will rarely interact with it directly. However, it's useful to understand
+> PubSub because we'll need to configure it properly for our application to
+> ensure performance and communication availability.
+
+> PubSub is linked between a local node and all connected remote nodes. This
+> allows PubSub to broadcast messages across the entire cluster. Remote message
+> broadcasting is important when we have a situation where a client is connected
+> to node A of our cluster, but a message originates on node B of our cluster.
+> PubSub handles this for us out-of-the-box, but we do need to make sure that
+> the nodes have a way to talk to each other. PubSub ships with a pg2 adapter
+> out-of-the-box. There is also a Redis PubSub adapter that allows for using
+> PubSub without having nodes clustered together.
