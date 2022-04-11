@@ -10,6 +10,6 @@ I may also take some notes of my own, but probably not many.
 
 ## TOC
 
-* [Chapter 1 - Real-time is Now](/chapter-1_realtime-is-now/README.md)
-* [Chapter 2 - Connect a Simple WebSocket](/chapter-2_connect-a-simple-websocket/README.md)
-* [Chapter 3 - First Steps with Phoenix Channels](/chapter-3_first-steps-with-phoenix-channels/README.md)
+* [Chapter 1 - Real-time is Now](/chapters/1-realtime-is-now/README.md)
+* [Chapter 2 - Connect a Simple WebSocket](/chapters/2-connect-a-simple-websocket/README.md)
+* [Chapter 3 - First Steps with Phoenix Channels](/chapters/3-first-steps-with-phoenix-channels/README.md)
