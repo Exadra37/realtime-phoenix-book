@@ -30,3 +30,16 @@ You can buy the [Real-Time Phoenix - Build Highly Scalable Systems with Channels
 > data, you add authorization to the Channel and topic.
 
 > You'll use both types of restriction to fully secure your real-time application.
+
+### Add Authentication to Sockets
+
+> You can use Socket authentication when you want to restrict a client's access
+> to a real-time connection.
+
+> When you add authentication checks at the very edge of your
+application, in the Socket, you’re able to avoid writing code that checks if
+there is a logged in user lower in the system. This improves your system's
+maintainability because your user session check exists in a single location.
+
+> You can add Socket authentication to your application by using a securely
+> signed token.
