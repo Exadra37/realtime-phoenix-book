@@ -43,3 +43,13 @@ maintainability because your user session check exists in a single location.
 
 > You can add Socket authentication to your application by using a securely
 > signed token.
+
+### Securing a Socket with Signed Tokens
+
+> WebSockets lack CORS (cross-origin resource sharing) restrictions that are
+> used by other types of web requests. The biggest vulnerability that this
+> exposes is a cross-site request forgery (CSRF) attack. In a CSRF attack, a
+> different website controlled by the attacker initiates a request to your
+> application. The attacker may be able to use this connection as if they were
+> the user, receiving private data about the user or making changes to the
+> user's data.
