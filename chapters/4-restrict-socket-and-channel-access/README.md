@@ -53,3 +53,27 @@ maintainability because your user session check exists in a single location.
 > application. The attacker may be able to use this connection as if they were
 > the user, receiving private data about the user or making changes to the
 > user's data.
+
+### Different Types of Tokens
+
+> Alternatives to Phoenix.Token can help us in these situations. A very common
+> web standard for authentication is the JSON Web Token (JWT). 1 JWTs are
+> cryptographically secure but not encrypted (an encrypted variant called JWE
+> does exist), so they meet the same security standard as Phoenix.Token . One large
+> difference, however, is that JWT is a standardized format that can be con-
+> sumed easily in nearly any language, including the front-end client.
+
+> Whether you're using Phoenix Tokens, JWT, or another technology, it's
+> important to set the token's expiration to a low-enough value. A token is the
+> user's way to get into your system, and a user has access for the duration of
+> the token. Pick a token duration that is long enough to be convenient, but
+> short enough to provide security for your users—I usually default to 10 min-
+> utes. There are techniques that can invalidate tokens before they're expired,
+> such as token blocklists, but we wont cover them in this book.
+
+In my opinion 10 minutes is huge for the scenario of authenticating a socket, 
+because when the user loads the web page, the connection to the socket will be
+established immediately with the provided token on page load, therefore the 
+token expiration should be around 10 seconds, maybe 20 seconds, but if you want 
+to allow time for really sluggish connections. For other scenarios you will
+need to adjust the expire time accordingly to the situation.
