@@ -37,7 +37,7 @@ You can buy the [Real-Time Phoenix - Build Highly Scalable Systems with Channels
 > to a real-time connection.
 
 > When you add authentication checks at the very edge of your
-application, in the Socket, you’re able to avoid writing code that checks if
+application, in the Socket, you're able to avoid writing code that checks if
 there is a logged in user lower in the system. This improves your system's
 maintainability because your user session check exists in a single location.
 
@@ -77,3 +77,38 @@ established immediately with the provided token on page load, therefore the
 token expiration should be around 10 seconds, maybe 20 seconds, but if you want 
 to allow time for really sluggish connections. For other scenarios you will
 need to adjust the expire time accordingly to the situation.
+
+### Add Authorization to Channels
+
+> Socket authentication is not always enough to fully secure our applications.
+> For example, we could have a Socket that stores the authenticated user ID
+> in Socket state and allows a connection to occur. When a client attempts to
+> join "user:1" Channel, but they are user ID 2, we should reject the Channel
+> join request. The client should only have access to topics that are relevant to
+> them. We can do that with Channel authorization.
+
+> When a client joins a Channel, the Channel's join/3 function is invoked. You
+> can add authorization to your Channel by making this function check for a
+> valid token. There are two options for how to add Channel authorization:
+> * Parameter based—Parameters can optionally be sent when a Channel
+> topic is joined. The client's authentication token is sent via these param-
+> eters and the Channel can authorize the topic using the data encoded
+> into the token.
+> * Socket state based—You can store information about the current connec-
+> tion, such as the connected user's ID or token, when a Socket connection
+> occurs. This state becomes available in Socket.assigns and can be used in
+> your Channel's join/3 function. You fully control the state at this point, so
+> it is trusted.
+
+> There are advantages to the Socket state-based approach that make it the
+> best choice most of the time. You can secure your application by passing a
+> single token to the Server on Socket connection, rather than passing the
+> token on every Channel join. This makes it much easier to write the code
+> powering your authorization.
+
+> The client subscription message to the Channel did not involve using the
+> token in any way. The token's information was previously exchanged and
+> kept in the Socket's state, which is then passed into the Channel. This allows
+> our client code to be much simpler, as the token is only used for connection
+> and then discarded. This is completely safe because the Socket's state is set
+> by our application in a trusted way; it can't be tampered with by a client.
