@@ -80,3 +80,41 @@ You can buy the [Real-Time Phoenix - Build Highly Scalable Systems with Channels
 > efits. You should, however, be able to recover the current state of the data if
 > the process is killed at any point.
 
+#### Message Delivery
+
+> Channels deliver messages from the server to a client with some limited
+> guarantees about how these messages are delivered. These guarantees will
+> often be okay for your applications, but you should understand the limitations
+> to know if they will not work for you.
+
+> Phoenix Channels use an at-most-once strategy to deliver messages to clients.
+> This means that a given message will either appear zero or one time for a
+> client. A different approach is at-least-once message delivery, where a message
+> will be delivered one or more times. It is not possible to have exactly-once
+> message delivery, due to uncertainty in distributed systems.
+
+> Phoenix’s at-most-once message delivery is a bit of a problem on the surface:
+> how can we work with a system that may not deliver a message? This is a
+> trade-off that Phoenix makes in how it implements real-time messaging. By
+> having an at-most-once guarantee with message delivery, Phoenix prevents
+> us from needing to ensure that every message can be processed multiple
+> times, which is potentially a much more complex system requirement.
+
+> The at-most-once strategy can be seen in action when we observe how PubSub
+> is used in broadcasting messages across our cluster. PubSub has a local com-
+> ponent that is very likely to always succeed in broadcasting the message to the
+> local node. PubSub also has a remote component that sends a message when
+> a broadcast occurs. PubSub will try only once to deliver the message and does
+> not have the concept of acknowledgment or retries. If the message is not delivered
+> for some reason, then that message would not make it to remotely connected
+> clients.
+
+> We also see this strategy at work when we observe how Phoenix delivers
+> messages to the client. Phoenix sends messages to connected clients but
+> doesn’t look for any type of acknowledgment message. If you want guaranteed
+> at-least-once delivery, then you will need to write code to add acknowledgment,
+> something we aren’t going to cover due to its complexity. The important thing
+> to know is that you are able to fully customize this behavior if you need to.
+> In practice, however, you usually want the at-most-once strategy that comes
+> standard with Phoenix.
+
