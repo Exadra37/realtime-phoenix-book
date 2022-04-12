@@ -118,3 +118,12 @@ You can buy the [Real-Time Phoenix - Build Highly Scalable Systems with Channels
 > In practice, however, you usually want the at-most-once strategy that comes
 > standard with Phoenix.
 
+### Use Channels in a Cluster
+
+> It is critical to run multiple servers when you are deploying a production
+application. Doing so provides benefits for scalability and error tolerance.
+
+> Elixir makes connecting a cluster of BEAM nodes very easy. However, we
+> have to ensure that we’re building our application to run across multiple
+> nodes without error. Phoenix Channels handles a lot of this for us due to
+> PubSub being used for all message broadcasts, which we’ll look at next.
