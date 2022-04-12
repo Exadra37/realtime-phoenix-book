@@ -25,7 +25,7 @@ You can buy the [Real-Time Phoenix - Build Highly Scalable Systems with Channels
 > * A bug in the client code causes it to close the connection.
 > * The server restarts due to a routine deploy or operational issue.
 
-### Channel Subscriptions
+#### Channel Subscriptions
 
 > In the event of a client disconnecting, the Channel subscriptions are no longer
 > present on the server because the memory is collected. For example, a client 
@@ -46,3 +46,37 @@ You can buy the [Real-Time Phoenix - Build Highly Scalable Systems with Channels
 > us automatically. If you’re using a non-standard client implementation, then
 > you need to specifically consider this event to prevent your clients from ending
 > up in an incorrect state after reconnection.
+
+#### Keeping Critical Data Alive
+
+> The processes that power our real-time application can shut down or be killed
+> at any point. When a client disconnects, for example, all of the processes that
+> power that client’s real-time communication layer (Socket and Channels) are
+> shut down. The data that is stored in a process is lost when the process shuts
+> down. We do not have any important information in the real-time communi-
+> cation processes by default, but we often will enrich our Channel processes
+> with custom state that powers our application.
+
+> When we store custom state in a process in our application, we must consider
+> what happens when the process shuts down. There is a useful rule of thumb
+> that we can use when designing our systems: all business-related data should
+> be stored in persistent stores that can withstand system restarts.
+
+> You can follow these best practices to set yourself up for the most success:
+> * Utilize a persistent source of truth that the Channel interacts with, such
+> as a database, for business data.
+> * Create a functional core that maintains boundaries between the commu-
+> nication layer and the business logic, like in Designing Elixir Systems with
+> OTP.
+> * Consider the life cycle of any processes linked to or otherwise associated
+> with your Channel process.
+
+> These practices will help you focus on the true responsibility of a Channel—
+> real-time communication—and avoid custom business logic being implemented
+> in your Channels.
+
+> These rules do not mean that you are unable to store critical business data
+> in process memory. Doing so can have significant speed and scalability ben-
+> efits. You should, however, be able to recover the current state of the data if
+> the process is killed at any point.
+
