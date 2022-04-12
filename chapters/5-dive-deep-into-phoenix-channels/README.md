@@ -24,3 +24,25 @@ You can buy the [Real-Time Phoenix - Build Highly Scalable Systems with Channels
 > without any other changes.
 > * A bug in the client code causes it to close the connection.
 > * The server restarts due to a routine deploy or operational issue.
+
+### Channel Subscriptions
+
+> In the event of a client disconnecting, the Channel subscriptions are no longer
+> present on the server because the memory is collected. For example, a client 
+> could be connected to one Socket and three Channels. If the client became 
+> disconnected from the server, then the server has zero Sockets and zero Channels. 
+> When the client reconnects to the server, the server has one Socket and zero 
+> Channels. In this scenario all of the Channel information has been lost from the
+> server, which means that our application would not be working properly.
+
+> Throughout this scenario, the client knows that it’s supposed to be connected
+> to the server and which Channel topics it should be connected to. This means
+> that the client can reconnect to the server (creating one Socket) and then
+> resubscribe to all of the topics (creating three Channels). This puts the client
+> back in a correct state, with an amount of downtime based on how long it
+> took to establish the connection and subscriptions.
+
+> The official Phoenix JavaScript client handles this reconnection scenario for
+> us automatically. If you’re using a non-standard client implementation, then
+> you need to specifically consider this event to prevent your clients from ending
+> up in an incorrect state after reconnection.
