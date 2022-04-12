@@ -8,6 +8,11 @@ import {Socket} from "phoenix"
 // token for authentication. Read below how it should be used.
 let socket = new Socket("/socket", {params: {token: window.userToken}})
 
+const authSocket = new Socket("/auth_socket", {params: {token: window.authToken}})
+
+authSocket.onOpen( () => console.log('authSocket connected') )
+authSocket.connect()
+
 // When you connect, you'll often need to authenticate the client.
 // For example, imagine you have an authentication plug, `MyAuth`,
 // which authenticates the session and assigns a `:current_user`.
@@ -75,25 +80,25 @@ console.log("send ping")
 channel.push("ping")
   .receive("ok", resp => console.log("receive", resp.ping))
 
-console.log("send pong")
-channel.push("pong")
-  .receive("ok", resp => console.log("won't happen"))
-  .receive("error", resp => console.error("won't happen yet"))
-  .receive("timeout", resp => console.error("pong message timeout"))
+// console.log("send pong")
+// channel.push("pong")
+//   .receive("ok", resp => console.log("won't happen"))
+//   .receive("error", resp => console.error("won't happen yet"))
+//   .receive("timeout", resp => console.error("pong message timeout"))
 
-console.log("send param_ping > error: true")
-channel.push("param_ping", {error: true})
-  .receive("error", resp => console.error("param_ping error:", resp))
+// console.log("send param_ping > error: true")
+// channel.push("param_ping", {error: true})
+//   .receive("error", resp => console.error("param_ping error:", resp))
 
-console.log("send param_ping > error: false")
-channel.push("param_ping", {error: false})
-  .receive("ok", resp => console.log("param_ping ok:", resp))
+// console.log("send param_ping > error: false")
+// channel.push("param_ping", {error: false})
+//   .receive("ok", resp => console.log("param_ping ok:", resp))
 
-console.log("send invalid")
-channel.push("invalid")
-  .receive("ok", resp => console.log("won't happen"))
-  .receive("error", resp => console.error("won't happen yet"))
-  .receive("timeout", resp => console.error("invalid event timeout"))
+// console.log("send invalid")
+// channel.push("invalid")
+//   .receive("ok", resp => console.log("won't happen"))
+//   .receive("error", resp => console.error("won't happen yet"))
+//   .receive("timeout", resp => console.error("invalid event timeout"))
 
 /**
  * RECEIVING MESSAGES

@@ -112,3 +112,19 @@ need to adjust the expire time accordingly to the situation.
 > our client code to be much simpler, as the token is only used for connection
 > and then discarded. This is completely safe because the Socket's state is set
 > by our application in a trusted way; it can't be tampered with by a client.
+
+### Use Authentication from JavaScript
+
+> Clients that connect to our secured Socket must be able to pass the authen-
+> tication parameters on connection. Phoenix’s JavaScript client provides a
+> simple way to add the right authentication parameters.
+
+> This task boils down to a few key parts:
+> * Controller—generate a token when our page loads and write it into the page’s 
+>   JavaScript
+> * JavaScript—send the token parameter with the Socket connection
+> * Socket—use the token in our Socket
+
+> If you do find yourself wanting to add topic-level authentication (where the 
+> token is provided with the topic join request), it’s possible to add a params 
+> argument that contains the token to socket.channel(channel, params) .
