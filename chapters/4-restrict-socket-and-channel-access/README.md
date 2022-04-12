@@ -154,3 +154,19 @@ need to adjust the expire time accordingly to the situation.
 > with the lowest resource usage.
 
 For example, Admins and Users should be in a different socket.
+
+### Wrapping Up
+
+> It is necessary to restrict access to Sockets and Channels in order to keep
+> your application safe. There are two different ways to secure the Channels of
+> your application—either by authenticating when a client connects to a Socket
+> or when a client joins a Channel. Socket authentication is useful when the
+> client should have no access at all to the part of the application served by the
+> Socket. Use Channel authorization to keep user-specific data safe from the
+> incorrect user.
+
+> Access restriction significantly informs the creation of a new Socket or
+> Channel. If you’re adding a new real-time feature and it has different access
+> requirements, such as the user needing to be an admin, then reach for a new
+> Socket. If you’re adding a new feature that is tied to an existing access
+> requirement, then a new Channel is probably best.
