@@ -128,3 +128,29 @@ need to adjust the expire time accordingly to the situation.
 > If you do find yourself wanting to add topic-level authentication (where the 
 > token is provided with the topic join request), it’s possible to add a params 
 > argument that contains the token to socket.channel(channel, params) .
+
+### When to Write a New Socket
+
+> We’ve written two Sockets so far, UserSocket and AuthSocket , and we wrote
+> Channels for each of them. This raises the question of when we should create
+> a new Socket versus using the same topic and adding a new Channel. You’ll
+> make this decision based primarily on the authentication needs of your
+> application. There are also performance costs to adding new Sockets; let’s
+> look at these costs first.
+
+> Each connected Socket adds one connection to the server, but each connected
+> Channel adds zero new connections to the server. Channels do take up a
+> slight amount of memory and CPU because there is a process associated with
+> each, but you can consider Channels nearly free because processes are cheap
+> in Elixir. Sockets are a bit more expensive due to network connections and
+> the heartbeat process.
+
+> The heartbeat and additional connections mean that the cost of many idle
+> Channels is less than the cost of many idle Sockets.
+
+> As a general rule of thumb, use multiple Channels with a single Socket. Use
+> multiple Sockets if your application has different authentication needs between
+> different parts of the application. This approach leads to a system architecture
+> with the lowest resource usage.
+
+For example, Admins and Users should be in a different socket.
