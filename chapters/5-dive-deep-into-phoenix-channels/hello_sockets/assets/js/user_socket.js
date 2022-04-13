@@ -110,4 +110,10 @@ channel.on("send_ping", payload => {
     .receive("ok", resp => console.log("ping:", resp.ping))
 })
 
+const recurringChannel = authSocket.channel("recurring")
+recurringChannel.on("new_token", (payload) => {
+  console.log("received new auth token", payload)
+})
+recurringChannel.join()
+
 export default socket

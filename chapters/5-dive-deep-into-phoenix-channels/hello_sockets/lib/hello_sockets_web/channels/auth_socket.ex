@@ -6,6 +6,7 @@ defmodule HelloSocketsWeb.AuthSocket do
   channel "ping:*", HelloSocketsWeb.PingChannel
   channel "tracked", HelloSocketsWeb.TrackedChannel
   channel "user:*", HelloSocketsWeb.AuthChannel
+  channel "recurring", HelloSocketsWeb.RecurringChannel
 
   @impl true
   def connect(%{"token" => token}, socket) do

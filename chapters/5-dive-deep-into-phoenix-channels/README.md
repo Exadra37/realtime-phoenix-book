@@ -161,3 +161,10 @@ flows that are not possible (or would be much more complex) with standard
 message broadcasting, which can’t easily send messages to a single client.
 
 > We can’t customize the behavior of Sockets as much due to their process structure.
+
+#### Send a Recurring Message
+
+> We sometimes need to send data to a client in a periodic way. One use case
+> of this is to refresh an authentication token every few minutes to ensure that
+> a client always has a valid token. This is useful because it is possible to
+> overwhelm a server if all clients ask for a token at the same time.
