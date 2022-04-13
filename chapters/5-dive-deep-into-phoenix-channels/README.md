@@ -151,3 +151,13 @@ application. Doing so provides benefits for scalability and error tolerance.
 > * Our clients may disconnect from a node and end up on a different node with
 > different internal state. We must accommodate this by having a central source 
 > of truth that any node can reference; this is most commonly a shared database.
+
+### Customize Channel Behavior
+
+> A Phoenix Channel is backed by a GenServer that lets it receive messages and
+store state. We can take advantage of this property of Channels to customize
+the behavior of our Channel on a per-connection level. This allows us to build
+flows that are not possible (or would be much more complex) with standard
+message broadcasting, which can’t easily send messages to a single client.
+
+> We can’t customize the behavior of Sockets as much due to their process structure.
