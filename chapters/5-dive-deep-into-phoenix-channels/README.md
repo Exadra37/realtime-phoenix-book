@@ -185,3 +185,25 @@ message broadcasting, which can’t easily send messages to a single client.
 > functional and generally side-effect free. If we modify the state of a Channel
 > process, other processes in the system are not affected.
 
+### Write Tests
+
+> Phoenix provides a simple and powerful way to write Channel tests. A few
+> basic primitives allow us to easily write tests of our entire real-time commu-
+> nication stack. We don’t have to worry about the challenges of WebSockets
+> or long polling when we write our tests. Instead, we only have to write tests
+> for the Socket and Channel implementations,
+
+#### Testing Sockets
+
+> Every Phoenix application generated with mix phx.new includes a few different
+test helpers found in test/support.
+
+> Phoenix.ChannelTest also provides a connect/3 function that accepts the Socket
+> handler ( UserSocket ) as well as any connection parameters. We are not using
+> the optional third argument, but it would be useful if you include specific
+> HTTP information as part of your Socket connection.
+
+> We use capture_log/1 to verify that our log statements worked properly. You
+> should write tests for any code that uses log statements, even though it seems
+> unimportant, because these logs may end up being critical to tracking down
+> production issues.
