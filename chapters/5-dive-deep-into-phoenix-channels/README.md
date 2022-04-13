@@ -168,3 +168,20 @@ message broadcasting, which can’t easily send messages to a single client.
 > of this is to refresh an authentication token every few minutes to ensure that
 > a client always has a valid token. This is useful because it is possible to
 > overwhelm a server if all clients ask for a token at the same time.
+
+#### Deduplicate Outgoing Messages
+
+> Preventing duplicate outgoing messages is a great exercise in Channel cus-
+> tomization. The solution to this problem must be implemented as close to the
+> client as possible, because that way we can be certain of what messages have
+> been sent to a particular client. Channels are the lowest-level process we
+> control between a single client and our server; this makes them the perfect
+> location for us to achieve this task.
+
+> We can put anything we want in Socket.assigns . Any data that we add to Sock-
+> et.assigns is for our Channel process only and won’t be seen by other Channel
+> processes, even Channels that use the same Socket. This is something that
+> can be confusing at first but makes sense when you consider that Elixir is
+> functional and generally side-effect free. If we modify the state of a Channel
+> process, other processes in the system are not affected.
+
