@@ -127,3 +127,27 @@ application. Doing so provides benefits for scalability and error tolerance.
 > have to ensure that we’re building our application to run across multiple
 > nodes without error. Phoenix Channels handles a lot of this for us due to
 > PubSub being used for all message broadcasts, which we’ll look at next.
+
+#### Challenges with Distributed Channels
+
+> A distributed application has potential problems that a single-node application
+> won’t experience. A single-node application may be the right call in some 
+> circumstances, such as a small internal application, but we often must deliver our 
+> applications to many users that require the performance and stability that are 
+> provided by distribution.
+
+> Here are a few of the challenges that we’ll face when distributing our applica-
+> tion. These problems are not specific to Elixir—you would experience the
+> same problems when building a distributed system in any language.
+> * We cannot be sure that we have fully accurate knowledge of the state of
+> remote nodes at any given time. We can use techniques and algorithms
+> to reduce uncertainty, but not completely remove it.
+> * Messages may not be transmitted to a remote node as fast as we’d expect,
+> or at all. It may be fairly rare for messages to be dropped completely, but
+> message delays are much more common.
+> * Writing high-quality tests becomes more complicated as we have to spin
+> up more complex scenarios to fully test our code. It is possible to write
+> tests in Elixir that spin up a local cluster to simulate different environments.
+> * Our clients may disconnect from a node and end up on a different node with
+> different internal state. We must accommodate this by having a central source 
+> of truth that any node can reference; this is most commonly a shared database.
