@@ -207,3 +207,33 @@ test helpers found in test/support.
 > should write tests for any code that uses log statements, even though it seems
 > unimportant, because these logs may end up being critical to tracking down
 > production issues.
+
+#### Testing Channels
+
+> Channels contain much more application logic than Sockets do. This means
+> they will be a bit more involved to test than Sockets.
+
+> Keep in mind during our tests that message passing is at the heart of Chan-
+> nels, and that the test module uses messages to verify data is sent and
+> received properly between the test process and a Channel process.
+
+> The socket/3 function returns a Phoenix.Socket struct that would be created if the
+> given handler, id, and assigned state were provided to our Socket implemen-
+> tation. This is a useful convenience function allowing us to set up initial state
+> without going through the process of connecting our real Socket.
+
+> We use subscribe_and_join/3 to join the given topic with certain params. The correct
+> Channel to use is inferred by matching the topic with the provided Socket
+> implementation. This ensures that our Socket has the appropriate Channel
+> routes defined, which adds to our test coverage.
+
+> We are using == in these tests, rather than pattern matching, because we
+> care that the reply of the join function is exactly {:error, %{}} . If we used pattern
+> matching, then a return value like {:error, %{reason: "invalid"}} would incorrectly
+> pass the test.
+
+> We cause the crash to occur by passing in a topic that doesn’t have numbers
+> separated by a colon. This highlights one of the challenges of writing tests in
+> Elixir: if we use the built-in assert_raise/2 function, our test would fail because
+> the ArgumentError happens in a process other than our test process. We get
+> around this challenge by using the Logger to verify our assertions.
