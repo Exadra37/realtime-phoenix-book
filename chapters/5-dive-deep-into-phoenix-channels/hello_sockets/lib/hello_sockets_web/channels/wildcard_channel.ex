@@ -19,10 +19,20 @@ defmodule HelloSocketsWeb.WildcardChannel do
   defp numbers_correct?(numbers) do
     numbers
     |> String.split(":")
-    |> Enum.map(&String.to_integer/1)
+    |> Enum.flat_map(&_to_integer/1)
     |> case do
-      [a, b] when b == a * 2 -> true
+      [a, b] when b == (a * 2) -> true
       _ -> false
+    end
+  end
+
+  defp _to_integer(number) do
+    case Integer.parse(number) do
+      :error ->
+        []
+
+      {integer, _rest_of_string} ->
+        [integer]
     end
   end
 
