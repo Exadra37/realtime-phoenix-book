@@ -266,3 +266,28 @@ test helpers found in test/support.
 > where the pushes would happen in the wrong order. The tests that I wrote revealed
 > the bug to me. The value of well-written tests never decreases, even for experienced
 > programmers.
+
+### Wrapping Up
+
+>Writing real-time applications requires you to consider the unreliable nature
+>of long-lived connections. Users can disconnect at any time, so your applica-
+>tions must be developed with this in mind. A source of truth that lives outside
+>of the connection life cycle is one of the best ways to combat the challenges
+>of unreliable connections.
+
+> Applications in production should always have multiple servers to ensure
+> uptime, even when something goes wrong. Channels are usable across mul-
+> tiple servers with only a small amount of work necessary to make sure
+> everything works as expected. Distributing your application over multiple
+> servers adds new challenges, but it can significantly improve scalability and
+> reliability.
+
+> It’s possible to both write and test complex business logic in Channels. Phoenix
+> gives you the right foundations so you can develop robust Channel tests while
+> only needing to learn a handful of functions. These tests are able to ensure
+> that complex logic such as asynchronous message processing and state is
+> correctly implemented in a Channel.
+
+> One of the most important aspects of a scalable real-time application is
+> ensuring that performance is good, even with a large number of simultaneous
+> users.
