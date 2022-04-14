@@ -237,3 +237,32 @@ test helpers found in test/support.
 > Elixir: if we use the built-in assert_raise/2 function, our test would fail because
 > the ArgumentError happens in a process other than our test process. We get
 > around this challenge by using the Logger to verify our assertions.
+
+#### Testing DedupeChannel
+
+> We will leverage both Channel and Elixir testing patterns to develop complete
+> tests for our Channel’s logic. Our tests will use message broadcasting to and 
+> from the DedupeChannel . This is the last technique we’ll cover for writing
+> Channel tests.
+
+> We use broadcast_from!/3 to trigger handle_out of our Channel. The broadcast
+> function invokes the PubSub callbacks present in the Phoenix.Channel.Server
+> module.
+
+> We use :sys.get_state/1 to retrieve the contents of our Channel.Server process that
+> is created by the test helper. This creates a tight coupling between the process
+> being spied on and the calling process, so you should limit its usage. It can
+> be valuable when used sparingly in tests because it gives all the information
+> about a process.
+
+> The push assertion functions are very useful when writing most tests, but
+> they remove the ability to test that the messages are in a certain order.
+
+##### The Importance of Tests
+
+> Tests that are easy to read and modify are an important part of having an application
+> that can be maintained by any teammate in the future. These tests also help identify
+> errors in code. When I originally created the DedupeChannel, I discovered a bug
+> where the pushes would happen in the wrong order. The tests that I wrote revealed
+> the bug to me. The value of well-written tests never decreases, even for experienced
+> programmers.
