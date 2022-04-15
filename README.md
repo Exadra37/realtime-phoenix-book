@@ -15,3 +15,4 @@ I may also take some notes of my own, but probably not many.
 * [Chapter 3 - First Steps with Phoenix Channels](/chapters/3-first-steps-with-phoenix-channels/README.md)
 * [Chapter 4 - Restrict Socket and Channel Access](/chapters/4-restrict-socket-and-channel-access/README.md)
 * [Chapter 5 - Dive Deep into Phoenix Channels](/chapters/5-dive-deep-into-phoenix-channels/README.md)
+* [Chapter 6 - Avoiding Performance Pitfalls](/chapters/6-avoiding-performance-pitfalls/README.md)
