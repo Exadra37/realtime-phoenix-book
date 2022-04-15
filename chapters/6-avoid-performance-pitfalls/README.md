@@ -49,3 +49,30 @@ You can buy the [Real-Time Phoenix - Build Highly Scalable Systems with Channels
 > and having different view ports into the application lets us to know how well
 > things are working.
 
+#### Types of Measurements
+
+> The best way to know if our application is behaving correctly is to place
+> instrumentation on as many different events and system operations as possi-
+> ble.
+
+> Here are a few of the simple but effective ways that you can measure things:
+> * Count occurrences — The number of times that an operation happens. We
+> could count every time a message is pushed to our Channel, or we could
+> count every time a Socket fails to connect.
+> * Count at a point in time — The value of a component of our system at a
+> moment of time. The number of connected Sockets and Channels could
+> be counted every few seconds. This is commonly called a gauge in many
+> measurement tools.
+> * Timing of operation — The amount of time that it takes for an operation
+> to complete. We could measure the time taken to push an event to a client
+> after the event is generated.
+
+> Each measurement type is useful in different situations, and there isn’t a
+> single type that’s superior to the others. A combination of different measure-
+> ments combined into a single view (in your choice of visualization tool) can
+> help to pinpoint an issue. For example, you may have a spike in new connec-
+> tion occurrences that lines up with an increase in memory consumption. All
+> of this could contribute to an increase in message delivery timing. Each of
+> these measurements on its own would tell you something, but not the full
+> picture. The combination of all of them contribute to understanding how the
+> system is stressed.
