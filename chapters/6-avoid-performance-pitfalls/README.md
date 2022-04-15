@@ -76,3 +76,14 @@ You can buy the [Real-Time Phoenix - Build Highly Scalable Systems with Channels
 > these measurements on its own would tell you something, but not the full
 > picture. The combination of all of them contribute to understanding how the
 > system is stressed.
+
+#### Collect Measurements using StatsD
+
+> StatsD is a daemon that aggregates statistics; it takes measurements sent
+> by our application and aggregates them into other back ends that collect the
+> stats. Many APMs provide a StatsD back-end integration; this makes StatsD
+> a great choice for collecting measurements.
+
+> It is easy to get started with StatsD in Elixir by using the Statix 1 library. 
+> This library has a simple interface with functions that correspond to StatsD 
+> measurement types.
