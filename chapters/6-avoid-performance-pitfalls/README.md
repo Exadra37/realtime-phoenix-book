@@ -34,3 +34,18 @@ You can buy the [Real-Time Phoenix - Build Highly Scalable Systems with Channels
 > We should be intentional in our data pipeline design so that we know the
 > capabilities and limitations of our solution. We’ll use GenStage to build
 > a production-ready data pipeline.
+
+### Measure Everything
+
+> A software application is made up of many interactions and events that
+> power features. The successful combination of all the different events in a
+> feature’s flow cause it to work properly and quickly. If even a single step of
+> our application encounters an issue or slowdown, the rest of that flow is
+> affected. We need to be aware of everything that happens in our application
+> to prevent and identify problems.
+
+> It is impossible to effectively run a decently sized piece of software without
+> some form of measurement. Software becomes a black box once deployed,
+> and having different view ports into the application lets us to know how well
+> things are working.
+
