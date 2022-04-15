@@ -87,3 +87,35 @@ You can buy the [Real-Time Phoenix - Build Highly Scalable Systems with Channels
 > It is easy to get started with StatsD in Elixir by using the Statix 1 library. 
 > This library has a simple interface with functions that correspond to StatsD 
 > measurement types.
+
+#### Visualizing Measurements
+
+> We are emitting our StatsD measurements, but we are not yet able to make
+> use of them. We need a tool for that. There are many commercial and open-
+> source tools that operate on StatsD metrics. It is outside of the scope of this
+> book to learn how to use these tools, but here’s what you can ultimately do
+> with these metrics.
+> * **Visualize metrics with graphs**
+> You can create graphs of your different measurements. You can even
+> combine and compare graphs to correlate potential problems.
+> * **Produce dashboards for your team**
+> You can combine graphs and other visualizations into a “single pane of
+> glass.” This allows you to quickly see the health of your system, maybe
+> from a shared monitor in your office.
+> * **Get alerted to problems**
+> Many metrics systems allow you to set up alerts on values of your mea-
+> surements. For example, you may want to get an alert when your Channel
+> begins taking a certain amount of time to respond to a particular request.
+> * **Detect anomalies**
+> Some metrics systems are capable of detecting anomalies in your metrics
+> without you configuring known thresholds. This can be useful in identify-
+> ing unexpected problems. For example, a metric system could automati-
+> cally detect that your metric values are outside of several standard devia-
+> tions and then alert you to a potential problem.
+
+> All of these features allow you to understand more about the state of your
+> system, closing one of the performance pitfalls. You can respond to any issues
+> or plan capacity for your system when you have this knowledge. You should
+> add measurements early in your application’s development so you can iden-
+> tify potential problems early—before a problem affects users.
+
