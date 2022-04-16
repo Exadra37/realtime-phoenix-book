@@ -197,3 +197,43 @@ end
 > the data of our application flows due to the importance of this part of our sys-
 > tem. The mechanism that handles outgoing real-time data is a data pipeline.
 
+#### Traits of a Data Pipeline
+
+> Our data pipeline should have a few traits no matter what technology we
+> choose. Our pipeline can scale from both a performance and maintainability
+> perspective when it exhibits these traits.
+> 
+> * **Deliver messages to all relevant clients**
+> This means that a real-time event will be broadcast to all our connected
+> Nodes in our data pipeline so they can handle the event for connected
+> Channels. Phoenix PubSub handles this for us, but we must consider
+> that our data pipeline spans multiple servers. We should never send
+> incorrect data to a client.
+>
+> * **Fast data delivery**
+> Our data pipeline should be as fast as possible. This allows a client to get
+> the latest information immediately. Producers of data should also be able
+> to trigger a push without worrying about performance.
+>
+> * **As durable as needed**
+> Your use case might require that push events have strong guarantees of
+> delivery, but your use case can also be more relaxed and allow for in-
+> memory storage until the push occurs. In either case, you should be able
+> to adjust the data pipeline for your needs, or even completely change it,
+> in a way that doesn’t involve completely rewriting it.
+> 
+> * **As concurrent as needed**
+> Our data pipeline should have limited concurrency so we don’t overwhelm
+> our application. This is use-case dependent, as some applications are
+> more likely to overwhelm different components of the system.
+> 
+> * **Measurable**
+> It’s important that we know how long it takes to send data to clients. If
+> it takes one minute to send real-time data, that reduces the application’s
+> usability.
+
+> These traits allow us to have more control over how our data pipeline operates,
+> both for the happy path and failure scenarios. There has always been debate
+> over the best technical solution for a data pipeline. A good solution for many
+> use cases is a queue-based, GenStage-powered data pipeline. This pipeline
+> exhibits the above traits while also being easy to configure.
