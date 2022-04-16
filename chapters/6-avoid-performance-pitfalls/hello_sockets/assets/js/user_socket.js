@@ -168,4 +168,18 @@ for (let i = 0; i < 5; i++) {
 
 console.log("5 parallel slow pings requested")
 
+
+
+/**
+ * Chapert 6 > Avoiding Performance Pitfalls > Build a Scalable Data Pipeline > Adding Concurrency and Channels
+ */
+
+const authUserChannel = authSocket.channel(`user:${window.userId}`)
+
+authUserChannel.on("push", (payload) => {
+  console.log("received auth user push", payload)
+})
+
+authUserChannel.join()
+
 export default socket

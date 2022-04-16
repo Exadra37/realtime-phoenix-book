@@ -298,3 +298,43 @@ end
 GenStage buffer will drop events after reaches the configure limit, therefore 
 care needs to be taken to not produce more events then what consumers can process.
 More details on [this post](https://elixirforum.com/t/genstage-producer-discarding-events/1943/3?u=exadra37) on the Elixir forum and in the [GenStage docs](https://hexdocs.pm/gen_stage/GenStage.html#module-buffering-demand).
+
+#### Adding Concurrency and Channels
+
+> A scalable data pipeline must handle multiple items at the same time; it must
+> be concurrent. GenStage has a solution for adding concurrency to our pipeline
+> with the ConsumerSupervisor module. This module allows us to focus on defining
+> the pipeline and letting the library take care of how the concurrency will be
+> managed.
+>
+> ConsumerSupervisor is a type of GenStage consumer that spawns a child process
+> for each item received. The amount of concurrency is controlled via setup
+> options, and it otherwise behaves exactly like a consumer. Every item spawns
+> a new process; they’re not re-used, but this is cheap to do in Elixir.
+
+> A quick note on concurrency versus parallelism. You make your system
+> concurrent by creating processes that run work. The BEAM then makes that
+> system parallel by taking the concurrent work and running it over multiple
+> cores at the same time. All of the concern around how parallel execution
+> happens is completely handled by the BEAM.
+
+> You’ll see that the jobs run ten at a time with a delay in between. The items
+> always group together the same way, but the group itself can come in any
+> order. This is because our tasks are running fully parallel with each other
+> and order is no longer guaranteed.
+>
+> In our earlier example, with a regular Consumer , the items were processed in
+> batches of five. In this example, the items were processed ten at a time. The
+> GenStage batch size hasn’t changed, but the ConsumerSupervisor is able to start
+> up max_demand (ten) workers at a time. Each worker handles a single item, so
+> the end result is that ten items are processed in parallel. You should tune
+> the max_demand to the maximum amount of processes that you want to run in
+> parallel, based on your use case.
+
+> ConsumerSupervisor is very powerful. We added concurrent execution to our data
+> pipeline in only a small amount of code, and most of it was boilerplate. This
+> scales to a very large number of jobs with very little issue, thanks to the
+> power of Elixir and the BEAM. One of the biggest advantages of how we added
+> our concurrency is that the BEAM manages parallel execution of our work.
+> **If we doubled our CPU cores, we’d double the execution parallelism of our**
+> **pipeline.**

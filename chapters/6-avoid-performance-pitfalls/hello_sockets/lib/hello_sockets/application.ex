@@ -5,7 +5,8 @@ defmodule HelloSockets.Application do
 
   use Application
 
-  alias HelloSockets.Pipeline.{Consumer, Producer}
+  alias HelloSockets.Pipeline.Producer
+  alias HelloSockets.Pipeline.ConsumerSupervisor
 
   @impl true
   def start(_type, _args) do
@@ -29,7 +30,7 @@ defmodule HelloSockets.Application do
       # in-memory workloads. It is better to have higher values if using an
       # external data store as this reduces the number of times we go to the
       # external data store.
-      {Consumer, subscribe_to: [{Producer, max_demand: 10, min_demand: 5}]},
+      {ConsumerSupervisor, subscribe_to: [{Producer, max_demand: 20, min_demand: 5}]},
 
       # Start the Endpoint (http/https)
       HelloSocketsWeb.Endpoint,
