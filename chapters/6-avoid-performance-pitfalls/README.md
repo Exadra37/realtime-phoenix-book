@@ -186,3 +186,14 @@ end
 > our Channel throughput. There is no silver bullet for writing code that is
 > fully immune to these slowdowns. Keep an eye out for times when your code
 > is going through a single process, whether it be a Channel or another process.
+
+### Build a Scalable Data Pipeline
+
+> Our real-time application keeps our users up to date with the latest information
+> possible. This means we have to get data from our server to our clients,
+> potentially a lot of data, as quickly and efficiently as possible. Delays or missed
+> messages will cause users to not have the most current information in their
+> display, affecting their experience. We must be intentional in designing how
+> the data of our application flows due to the importance of this part of our sys-
+> tem. The mechanism that handles outgoing real-time data is a data pipeline.
+
