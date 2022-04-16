@@ -119,3 +119,70 @@ You can buy the [Real-Time Phoenix - Build Highly Scalable Systems with Channels
 > add measurements early in your application’s development so you can iden-
 > tify potential problems early—before a problem affects users.
 
+### Keep Your Channels Asynchronous
+
+> Elixir is a parallel execution machine. Each Channel can leverage the princi-
+> ples of OTP design to execute work in parallel with other Channels, since the
+> BEAM executes multiple processes at once. Every message processed by a
+> Channel, whether incoming or outgoing, must go through the Channel process
+> in order to execute. It’s possible for this to stop working well if we’re not
+> careful about how our Channel is designed. This is easiest to see when we
+> have an example of the problem in front of us.
+
+```elixir
+# To simulate a bottleneck in the Channel, where there is no parallelism
+# present, even though we're using one of the most parallel languages available!
+# The root cause of this problem is that our Channel is a single process that
+# can handle only one message at a time. When a message is slow to process,
+# other messages in the queue have to wait for it to complete. We artificially
+# added slowness into our handler, but something like a database query or API
+# call could cause this problem naturally.
+def handle_in("slow_ping", _payload, socket) do
+  Process.sleep(:rand.uniform(3000))
+  {:reply, {:ok, %{ping: "pong"}}, socket}
+end
+
+# Phoenix provides a solution for the above slow_ping problem. We can respond
+# in a separate process that executes in parallel with our Channel, meaning we
+# can process all messages concurrently. We’ll use Phoenix’s socket_ref/1
+# function to turn our Socket into a minimally represented format that can be
+# passed around. Let’s make this change in our StatsChannel .
+def handle_in("parallel_slow_ping", _payload, socket) do
+  # The ref variable used by this function is a stripped-down version of the
+  # socket . We pass a reference to the Socket around, rather than the full
+  # thing, to avoid copying potentially large amounts of memory around the
+  # application.
+  ref = socket_ref(socket)
+
+  # Task is used to get a Process up and running very quickly. In practice,
+  # however, you'll probably be calling into a GenServer. You should always
+  # pass the socket_ref to any function you call.
+  Task.start_link(fn ->
+    Process.sleep(:rand.uniform(3000))
+
+    # We use Phoenix.Channel.reply/2 to send a response to the Socket. This
+    # serializes the message into a reply and sends it to the Socket transport
+    # process. Once this occurs, our client receives the response as if it came
+    # directly from the Channel. The outside client has no idea that any of
+    # this occurred.
+    Phoenix.Channel.reply(ref, {:ok, %{ping: "pong"}})
+  end)
+
+  {:noreply, socket}
+end
+```
+
+> You shouldn’t reach for reply/2 for all of your Channels right away. If you have
+> a use case where a potentially slow database query is being called, or if you
+> are leveraging an external API, then it’s a good fit. As with most things, there
+> are benefits and trade-offs to using reply/2 . We have seen the benefit of increased
+> parallelism already. A trade-off, though, is that we lose the ability to slow down
+> a client (back-pressure) if it is asking too much of our system. We could write
+> code to support a maximum amount of concurrency per Channel if needed.
+> This would give us increased performance and ability to back-pressure, at a
+> cost of increased complexity.
+
+> Asynchronous Channel responses help to close a pitfall of accidentally limiting
+> our Channel throughput. There is no silver bullet for writing code that is
+> fully immune to these slowdowns. Keep an eye out for times when your code
+> is going through a single process, whether it be a Channel or another process.

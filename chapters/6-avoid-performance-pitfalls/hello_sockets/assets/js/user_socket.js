@@ -141,4 +141,31 @@ for (let i = 0; i < 5; i++) {
   statsChannelValid.push("ping")
 }
 
+const slowStatsSocket = new Socket("/stats_socket", {})
+slowStatsSocket.connect()
+
+const slowStatsChannelValid = slowStatsSocket.channel("valid")
+slowStatsChannelValid.join()
+
+for (let i = 0; i < 5; i++) {
+  slowStatsChannelValid.push("slow_ping")
+    .receive("ok", () => console.log("Slow ping response received", i))
+}
+
+console.log("5 slow pings requested")
+
+
+const fastStatsSocket = new Socket("/stats_socket", {})
+fastStatsSocket.connect()
+
+const fastStatsChannelValid = fastStatsSocket.channel("valid")
+fastStatsChannelValid.join()
+
+for (let i = 0; i < 5; i++) {
+  fastStatsChannelValid.push("parallel_slow_ping")
+    .receive("ok", () => console.log("Parallel slow ping response received", i))
+}
+
+console.log("5 parallel slow pings requested")
+
 export default socket
