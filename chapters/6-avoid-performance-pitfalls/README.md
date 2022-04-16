@@ -237,3 +237,24 @@ end
 > over the best technical solution for a data pipeline. A good solution for many
 > use cases is a queue-based, GenStage-powered data pipeline. This pipeline
 > exhibits the above traits while also being easy to configure.
+
+#### GenStage Powered Pipeline
+
+> GenStage helps us write a data pipeline that can exchange data from producers
+> to consumers. GenStage is not an out-of-the-box data pipeline. Instead,
+> it provides a specification on how to pass data, which we can then implement
+> in our application's data pipeline.
+>
+> GenStage provides two main stage types that are used to model our pipeline:
+> * **Producer** — Coordinates the fetching of data items and then passes to the
+> next consumer stage. Producers can fetch data from a database, or they
+> can keep it in memory. In this chapter, our data pipeline will be completely
+> in memory.
+> * **Consumer** — Asks for and receives data items from the previous producer
+> stage. These items are then processed by our code before more items are
+> received.
+
+> We model our pipeline in a very sequential way. We start with a producer
+> stage that is connected to a consumer stage. We could continue to link
+> together as many stages as needed to model our particular data pipeline—a
+> consumer can also be a producer to other consumers.
