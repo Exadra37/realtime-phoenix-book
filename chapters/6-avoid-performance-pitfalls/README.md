@@ -258,3 +258,43 @@ end
 > stage that is connected to a consumer stage. We could continue to link
 > together as many stages as needed to model our particular data pipeline—a
 > consumer can also be a producer to other consumers.
+
+> GenStage will take the items we provide it (there could be several at once)
+> and either sends them to waiting consumer stages or buffers them in memory.
+> We are using GenStage’s internal buffer in our pipeline to hold and send data.
+>
+> This is a non-traditional use of GenStage, but allows us to have an item buffer
+> while writing no buffering code of our own. This, combined with other features
+> of GenStage that we’ll cover, gives us a lot of power for very little code.
+
+> We add each stage to our application before our Endpoint boots. This is very
+> important because we want our data pipeline to be available before our web
+> endpoints are available. If we didn’t do this, we would sometimes see “no
+> process” errors.
+
+> The min/max demand option helps us configure our pipeline to only process
+> a few items at a time. This should be configured to a low value for in-memory
+> workloads. It is better to have higher values if using an external data store
+> as this reduces the number of times we go to the external data store.
+
+> You will immediately see a consumer message after the first push/1 call. Things
+> get more interesting when we send many events to the producer in a short
+> time period. The consumer starts by processing one item at a time. After ten
+> are processed, the items are processed five at a time until the items are all
+> processed.
+>
+> This pattern appears a bit unusual because we never see ten items processed
+> at once, and we also see many single items processed. A GenStage consumer
+> splits events into batches based on the max and min demand. Our values
+> are ten and five, so the events are split into a max batch size of five. The single
+> items are an implementation detail of how the batching works—this isn’t a
+> big deal for a real application.
+>
+> For most use cases, you won’t need to worry about that internals of the
+> buffering process. GenStage takes care of the entire process of managing the
+> buffer and demand of consumers. You only need to think about writing data
+> to the producer and the rest will be managed for you.
+
+GenStage buffer will drop events after reaches the configure limit, therefore 
+care needs to be taken to not produce more events then what consumers can process.
+More details on [this post](https://elixirforum.com/t/genstage-producer-discarding-events/1943/3?u=exadra37) on the Elixir forum and in the [GenStage docs](https://hexdocs.pm/gen_stage/GenStage.html#module-buffering-demand).

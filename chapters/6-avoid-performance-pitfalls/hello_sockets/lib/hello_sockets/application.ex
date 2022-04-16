@@ -5,6 +5,8 @@ defmodule HelloSockets.Application do
 
   use Application
 
+  alias HelloSockets.Pipeline.{Consumer, Producer}
+
   @impl true
   def start(_type, _args) do
 
@@ -13,10 +15,25 @@ defmodule HelloSockets.Application do
     children = [
       # Start the Telemetry supervisor
       HelloSocketsWeb.Telemetry,
+
       # Start the PubSub system
       {Phoenix.PubSub, name: HelloSockets.PubSub},
+
+      # We add each stage to our application before our Endpoint boots. This is
+      # very important because we want our data pipeline to be available before
+      # our web endpoints are available. If we didn't do this, we would
+      # sometimes see “no process” errors.
+      {Producer, name: Producer},
+      # The min/max demand option helps us configure our pipeline to only process
+      # a few items at a time. This should be configured to a low value for
+      # in-memory workloads. It is better to have higher values if using an
+      # external data store as this reduces the number of times we go to the
+      # external data store.
+      {Consumer, subscribe_to: [{Producer, max_demand: 10, min_demand: 5}]},
+
       # Start the Endpoint (http/https)
-      HelloSocketsWeb.Endpoint
+      HelloSocketsWeb.Endpoint,
+
       # Start a worker by calling: HelloSockets.Worker.start_link(arg)
       # {HelloSockets.Worker, arg}
     ]
