@@ -431,3 +431,30 @@ More details on [this post](https://elixirforum.com/t/genstage-producer-discardi
 > defer those decisions and focus on the behavior that is most important for now.
 > GenStage is a great choice for writing a data pipeline. It’s efficient, well-designed
 > with OTP principles, and easy to adapt to new requirements over time.
+
+### Wrapping Up
+
+> The Performance Pitfalls are common problems that affect our application
+> development. We’re able to get a head start on our application’s performance
+> by considering them early in the development process. The key aspect of
+> overcoming these pitfalls is to be intentional. We must think about how to
+> overcome performance problems throughout the development life cycle; it’s
+> not good enough to consider performance at the beginning or end only.
+
+> We need to know if our application is running and healthy. We can use a
+> metrics protocol like StatsD, combined with a data visualization service, to
+> provide measurements of our running application. It is easy to add metrics
+> to your applications, so always do it!
+
+> Elixir is designed around concurrency, but we must still consider how our
+> code runs. Channels are not concurrent because they are a single process.
+> This affects a Channel’s throughput, but this can be counteracted with
+> development techniques. We’re able to spawn processes to handle requests.
+> This gives our Channel the ability to process multiple requests at the same
+> time for a connected client.
+> Moving data from server to client is one of the key tasks of our real-time
+
+> application. Genstage is used to develop a real-time data pipeline that provides
+> us with a scalable and well-featured way to process data. We will often use
+> the same basic GenStage setup to configure our application’s data pipeline,
+> so we don’t reinvent the wheel for every real-time application we develop.
