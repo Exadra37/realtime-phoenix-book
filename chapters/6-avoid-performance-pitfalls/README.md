@@ -379,3 +379,55 @@ More details on [this post](https://elixirforum.com/t/genstage-producer-discardi
 > flex every nook and cranny of our data pipeline, but it covers close to all of
 > it. Now that we have these tests, we would learn immediately if our pipeline
 > became misconfigured.
+
+#### The Power of GenStage
+
+> Our applications must grow and adapt to changing requirements or lessons
+> learned over time. We find ourselves in the best position when we can imple-
+> ment new requirements by changing very little code. The power of GenStage
+> is that it can grow with our application. We start simple and add as needed
+> over time.
+
+> Let’s look at a few examples of how our application may change over time.
+> We’ll think about how GenStage can help us achieve these goals.
+>
+> ##### Enforce stricter delivery guarantees for messages
+> One of the biggest trade-offs with a fully in-memory approach is that a
+> server crash or restart will lose all current in-memory work. We can use
+> a data store such as a SQL database, Redis, or Kafka to store every out-
+> going message. This would reduce data loss potential when a server
+> restarts. GenStage helps us here because its core purpose is to handle
+> data requesting and buffering from external data stores. We could adapt
+> our pipeline’s Producer module in order to read from the data store.
+> You may get pretty far with an in-memory, no-persistence solution. There
+> is a great saying in software architecture: “Our software architecture is
+> judged by the decisions we are able to defer.” This means that you’re able
+> to tackle the important things up-front and leave yourself open to tackle
+> currently less important things in the future—such as pipeline persistence.
+>
+> ##### Augment an outgoing message with data from a database
+> Our GenStage-powered pipeline exposes a Worker module that can do
+> anything you want it to do. For example, it’s possible to augment messages
+> with data from an external API or database. These external resources
+> often have a maximum throughput, so the maximum concurrency option
+> helps us to avoid overwhelming these external data providers. We could
+> also leverage the concept of a GenStage ProducerConsumer to achieve the goal
+> of data augmentation.
+>
+> ##### Equitable dispatching between users
+> Our GenStage-based pipeline will currently send items on a first-come-
+> first-served basis. This is great for most applications, but it could be
+> problematic in an environment where a single user (or team of users) has
+> significantly more messages than other users. In this scenario, all users
+> would become slower due to the effect of a single user.
+
+> GenStage allows us to write a custom Dispatcher module capable of routing
+> messages in any way we want. We could leverage this to isolate users that
+> are taking over the system’s capacity onto a single worker. We wouldn’t need
+> to change any existing part of our application other than our Producer and
+> Consumer modules.
+
+> We don’t have to do any of these things until it’s the right time. We’re able to
+> defer those decisions and focus on the behavior that is most important for now.
+> GenStage is a great choice for writing a data pipeline. It’s efficient, well-designed
+> with OTP principles, and easy to adapt to new requirements over time.
