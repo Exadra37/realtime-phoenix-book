@@ -6,7 +6,7 @@ defmodule HelloSocketsWeb.StatsChannel do
     {:ok, socket}
   end
 
-  def join("invalid", _payload, socket) do
+  def join("invalid", _payload, _socket) do
     channel_join_increment("fail")
     {:error, %{reason: "always fail"} }
   end

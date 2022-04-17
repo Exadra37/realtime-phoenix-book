@@ -361,3 +361,21 @@ More details on [this post](https://elixirforum.com/t/genstage-producer-discardi
 > amount of clock difference that would either add or remove milliseconds to
 > the difference. In practice, we can accept this because the difference will
 > usually be small, and we aren't basing application logic on the times.
+
+#### Test our Data Pipeline
+
+> There are a few different ways to approach the testing methodology for our
+> pipeline. We could write unit tests for every part of the pipeline or integration
+> tests for the entire pipeline. We’ll look at how to integration test our pipeline
+> to see all pieces work together. This serves us well because we don’t have
+> complex logic in our data pipeline. If we had more complex functions in our
+> Worker , then we would most likely also want unit tests.
+
+> We have to use a synchronous test, denoted by async: false , because our data 
+> pipeline is globally available to the test suite. Using a synchronous test
+> prevents random test failures.
+
+> Testing doesn’t have to be complex to be powerful. This integration test doesn’t
+> flex every nook and cranny of our data pipeline, but it covers close to all of
+> it. Now that we have these tests, we would learn immediately if our pipeline
+> became misconfigured.

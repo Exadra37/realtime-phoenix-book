@@ -16,3 +16,5 @@ config :logger, level: :warn
 
 # Initialize plugs at runtime for faster test compilation
 config :phoenix, :plug_init_mode, :runtime
+
+config :statix, HelloSockets.Statix, port: 8127
