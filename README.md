@@ -10,9 +10,10 @@ I may also take some notes of my own, but probably not many.
 
 ## TOC
 
-* [Chapter 1 - Real-time is Now](/chapters/1-realtime-is-now/README.md)
-* [Chapter 2 - Connect a Simple WebSocket](/chapters/2-connect-a-simple-websocket/README.md)
-* [Chapter 3 - First Steps with Phoenix Channels](/chapters/3-first-steps-with-phoenix-channels/README.md)
-* [Chapter 4 - Restrict Socket and Channel Access](/chapters/4-restrict-socket-and-channel-access/README.md)
-* [Chapter 5 - Dive Deep into Phoenix Channels](/chapters/5-dive-deep-into-phoenix-channels/README.md)
-* [Chapter 6 - Avoiding Performance Pitfalls](/chapters/6-avoiding-performance-pitfalls/README.md)
+* Part I - Powering Real-Time Applications with Phoenix
+  + [Chapter 1 - Real-time is Now](/parts/1-powering-realtime-applications-with-phoenix/1-realtime-is-now/README.md)
+  + [Chapter 2 - Connect a Simple WebSocket](/parts/1-powering-realtime-applications-with-phoenix/2-connect-a-simple-websocket/README.md)
+  + [Chapter 3 - First Steps with Phoenix Channels](/parts/1-powering-realtime-applications-with-phoenix/3-first-steps-with-phoenix-channels/README.md)
+  + [Chapter 4 - Restrict Socket and Channel Access](/parts/1-powering-realtime-applications-with-phoenix/4-restrict-socket-and-channel-access/README.md)
+  + [Chapter 5 - Dive Deep into Phoenix Channels](/parts/1-powering-realtime-applications-with-phoenix/5-dive-deep-into-phoenix-channels/README.md)
+  + [Chapter 6 - Avoiding Performance Pitfalls](/parts/1-powering-realtime-applications-with-phoenix/6-avoiding-performance-pitfalls/README.md)
