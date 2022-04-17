@@ -1,6 +1,5 @@
 # CHAPTER 6 - AVOIDING PERFORMANCE PITFALLS
 
-
 You can buy the [Real-Time Phoenix - Build Highly Scalable Systems with Channels](https://pragprog.com/titles/sbsockets/real-time-phoenix/) book, by Stephen Bussey, with the 35% discount code from the [Elixir Forum Giveaways](https://elixirforum.com/t/elixir-forum-update-2022-the-100-000-issue/45299) page.
 
 
@@ -338,3 +337,27 @@ More details on [this post](https://elixirforum.com/t/genstage-producer-discardi
 > our concurrency is that the BEAM manages parallel execution of our work.
 > **If we doubled our CPU cores, we’d double the execution parallelism of our**
 > **pipeline.**
+
+#### Measuring our Pipeline
+
+> The ultimate question of running software is “how do I know it’s working?”
+> Our data pipeline is no different. We need to be able to answer questions
+> about the health of our pipeline so that we can fix any problems that occur.
+
+> There are different ways to measure time in the BEAM, but we are using the 
+> system time because a real-time app often runs across multiple servers. If we 
+> used :erlang.monotonic_time/0, we would have drastically inaccurate timing
+> information. However, there is some inaccuracy with system time as well 
+> because two servers will often have slightly different times.
+
+> We are using a histogram metric type to capture statistical information
+> with our metric. Histograms aggregate several attributes of a given metric,
+> such as percentiles, count, and sum. You will often use a histogram type
+> when capturing a timing metric.
+
+> There is one disclaimer for this measurement technique that is worth
+> repeating: our data pipeline spans multiple servers, so the data could originate
+> on a different server than where it finishes. Two servers usually have a slight
+> amount of clock difference that would either add or remove milliseconds to
+> the difference. In practice, we can accept this because the difference will
+> usually be small, and we aren't basing application logic on the times.
