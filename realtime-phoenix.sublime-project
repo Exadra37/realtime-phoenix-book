@@ -1,0 +1,28 @@
+{
+	"folders":
+	[
+		{
+			"path": "."
+		}
+	],
+  "settings":
+  {
+    "LSP": {
+      "lsp-elixir" : {
+        "settings": {
+          "elixirLS":
+          {
+            "projectDir": "projects/sneakers_store/sneakers_23",
+          },
+        }
+      },
+      "elixir-ls":
+      {
+        "enabled": true,
+        "settings" : {
+          "elixirLS.projectDir": "projects/sneakers_store/sneakers_23"
+        }
+      },
+    }
+  }
+}
