@@ -13,7 +13,7 @@ defmodule Sneakers23Web.Endpoint do
     websocket: true,
     longpoll: false
 
-  socket "/product_socket", Sneakers23Web.UserSocket,
+  socket "/product_socket", Sneakers23Web.ProductSocket,
     websocket: true,
     longpoll: false
 
